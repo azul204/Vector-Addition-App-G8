@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spring Vector Addition App</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(180deg, #b3e5fc, #c8e6c9);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    h1, h2 {
+      color: #0d5c63;
+    }
+
+    button {
+      padding: 12px 22px;
+      border: none;
+      border-radius: 14px;
+      background-color: #2bb673;
+      color: white;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+    }
+
+    button:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .page {
+      display: none;
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .active {
+      display: block;
+    }
+
+    .card {
+      max-width: 750px;
+      margin: auto;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 35px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+      animation: floatIn 0.8s ease;
+    }
+
+    @keyframes floatIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    input, select {
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #b2dfdb;
+      font-size: 1rem;
+    }
+
+    .inputs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 15px 0;
+    }
+
+    .vector-row {
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 2px dashed #a5d6a7;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 1.15rem;
+      font-weight: bold;
+      color: #00695c;
+    }
+
+    /* Floating spring stickers */
+    .sticker {
+      position: fixed;
+      font-size: 28px;
+      animation: drift linear infinite;
+      opacity: 0.85;
+    }
+
+    @keyframes drift {
+      from { transform: translateY(110vh) rotate(0deg); }
+      to { transform: translateY(-20vh) rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Spring stickers -->
+  <div class="sticker" style="left: 10%; animation-duration: 18s;">🌸</div>
+  <div class="sticker" style="left: 25%; animation-duration: 22s;">🌼</div>
+  <div class="sticker" style="left: 45%; animation-duration: 20s;">🦋</div>
+  <div class="sticker" style="left: 65%; animation-duration: 24s;">🌷</div>
+  <div class="sticker" style="left: 85%; animation-duration: 19s;">🍃</div>
+
+  <!-- Page 1: Welcome -->
+  <div id="page1" class="page active">
+    <div class="card">
+      <h1>🌱 Welcome to Spring Vectors 🌱</h1>
+      <p>Explore vector addition in 2D and 3D with a fresh, calm spring vibe.</p>
+      <br />
+      <button onclick="goToPage(2)">Start Calculating →</button>
+    </div>
+  </div>
+
+  <!-- Page 2: Calculator -->
+  <div id="page2" class="page">
+    <div class="card">
+      <h2>🌿 Vector Addition Calculator</h2>
+
+      <label><strong>Dimension:</strong></label><br />
+      <select id="dimension" onchange="resetVectors()">
+        <option value="2">2D</option>
+        <option value="3">3D</option>
+      </select>
+
+      <div id="vectors"></div>
+
+      <button onclick="addVector()">➕ Add Vector</button>
+      <button onclick="calculate()">🧮 Calculate</button>
+
+      <div class="result" id="result"></div>
+
+      <br /><br />
+      <button onclick="goToPage(1)">← Back to Welcome</button>
+    </div>
+  </div>
+
+  <script>
+    let vectorCount = 0;
+
+    function goToPage(page) {
+      document.getElementById('page1').classList.remove('active');
+      document.getElementById('page2').classList.remove('active');
+      document.getElementById('page' + page).classList.add('active');
+    }
+
+    function resetVectors() {
+      vectorCount = 0;
+      document.getElementById('vectors').innerHTML = '';
+      document.getElementById('result').innerText = '';
+      addVector();
+    }
+
+    function addVector() {
+      const dim = parseInt(document.getElementById('dimension').value);
+      vectorCount++;
+
+      const row = document.createElement('div');
+      row.className = 'vector-row';
+
+      let html = `<strong>Vector ${vectorCount}</strong><div class="inputs">`;
+      html += `<input type="number" placeholder="x" />`;
+      html += `<input type="number" placeholder="y" />`;
+      if (dim === 3) html += `<input type="number" placeholder="z" />`;
+      html += `</div>`;
+      row.innerHTML = html;
+      document.getElementById('vectors').appendChild(row);
+    }
+
+    function calculate() {
+      const dim = parseInt(document.getElementById('dimension').value);
+      let sum = Array(dim).fill(0);
+
+      const inputs = document.querySelectorAll('#vectors input');
+      inputs.forEach((input, index) => {
+        sum[index % dim] += parseFloat(input.value) || 0;
+      });
+
+      document.getElementById('result').innerText =
+        Resultant Vector = (${sum.join(', ')});
+    }
+
+    // Initialize
+    addVector();
+  </script>
+</body>
+</html>
